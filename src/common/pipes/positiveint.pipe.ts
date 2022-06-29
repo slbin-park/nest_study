@@ -1,9 +1,4 @@
-import {
-  ArgumentMetadata,
-  Injectable,
-  PipeTransform,
-  HttpException,
-} from '@nestjs/common';
+import { Injectable, PipeTransform, HttpException } from '@nestjs/common';
 
 @Injectable()
 export class PositiveIntPipe implements PipeTransform {

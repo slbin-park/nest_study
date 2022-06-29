@@ -1,20 +1,17 @@
 import { SuccessInterceptor } from './../common/interceptors/success.interceptor';
 import { CatsService } from './cats.service';
 import {
+  Body,
   Controller,
-  Delete,
   Get,
-  HttpException,
-  Param,
-  ParseIntPipe,
-  Patch,
   Post,
-  Put,
   UseFilters,
   UseInterceptors,
 } from '@nestjs/common';
 import { HttpExceptionFilter } from 'src/common/exceptions/http-exception.filter';
-import { PositiveIntPipe } from 'src/common/pipes/positiveint.pipe';
+import { CatRequestDto } from './dto/cats.request.dto';
+import { ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ReadOnlyCatDto } from './dto/cat.dto';
 
 @Controller('cats')
 @UseInterceptors(SuccessInterceptor)
@@ -22,38 +19,42 @@ import { PositiveIntPipe } from 'src/common/pipes/positiveint.pipe';
 export class CatsController {
   constructor(private readonly CatsService: CatsService) {}
 
-  // cats/
+  @ApiOperation({ summary: '현재 고양이 가져오기' })
   @Get()
-  getAllCat() {
-    console.log('hello controller');
-    // throw new HttpException('api is broken', 401);
-    return { cats: 'get all cat' };
+  getCurrentCat() {
+    return 'current cat';
   }
 
-  // cats/:id
-  @Get(':id')
-  getOneCat(@Param('id', ParseIntPipe, PositiveIntPipe) param: number) {
-    console.log(param);
-    return 'one cat';
-  }
-
+  @ApiResponse({
+    status: 500,
+    description: 'Server Error...',
+  })
+  @ApiResponse({
+    status: 200,
+    description: '성공',
+    type: ReadOnlyCatDto,
+  })
+  @ApiOperation({ summary: '회원가입' })
   @Post()
-  createCate() {
-    return 'create cat';
+  async signIp(@Body() body: CatRequestDto) {
+    return await this.CatsService.signUp(body);
   }
 
-  @Put(':id')
-  updateCat() {
-    return 'update cat';
+  @ApiOperation({ summary: '로그인' })
+  @Post('login')
+  logIn() {
+    return 'login';
   }
 
-  @Patch(':id')
-  updatePartialCat() {
-    return '--update';
+  @ApiOperation({ summary: '로그아웃' })
+  @Post('logout')
+  logOut() {
+    return 'logout';
   }
 
-  @Delete(':id')
-  deleteCat() {
-    return 'delete service';
+  @ApiOperation({ summary: '고양이 이미지 업로드' })
+  @Post('upload/cats')
+  uploadCatImg() {
+    return 'uploadImg';
   }
 }
